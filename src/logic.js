@@ -59,6 +59,7 @@ export default class TodoApp {
 
     const defaultProject = new Project("Default", "");
     this.#projects.push(defaultProject);
+    this.activeProject = defaultProject;
   }
 
 
@@ -70,11 +71,19 @@ export default class TodoApp {
     return this.#allTasks;
   }
 
+  getProject(id) {
+    return this.#projects.find((el) => el.id === id);
+  }
+
+  get defaultProject() {
+    return this.#projects[0];
+  }
+
   createTask(title, dueDate, priority, notes, project) {
     const newTask = new Task(title, dueDate, priority, notes, project);
     this.#allTasks.push(newTask);
     if (project) {
-      project.addTask(task);
+      project.addTask(newTask);
     }
     return newTask;
   }
@@ -113,7 +122,7 @@ export default class TodoApp {
   addTaskToProject(taskId, projectId) {
     const project = this.#projects.find((element) => element.id === projectId);
     const task = this.#allTasks.find((element) => element.id === taskId);
-
+    this.removeTaskFromProject(taskId);
     task.project = project;
     project.addTask(task);
   }
@@ -129,6 +138,7 @@ export default class TodoApp {
 
   removeProject(projectId) {
     const index = this.#projects.findIndex((element) => element.id === projectId);
+    if (index === 0) return;
     const project = this.#projects[index];
     project.tasks.forEach((task) => {task.project = null;});
     this.#projects.splice(index, 1);

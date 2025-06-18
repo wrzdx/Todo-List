@@ -1,3 +1,3 @@
-import TodoApp from "./logic";
+import render from "./render";
 
-const app = new TodoApp();
+render();
