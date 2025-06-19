@@ -50,7 +50,7 @@ body {
   font-family: system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
   background-color: var(--dark);
   color: var(--light);
-
+  
   --dark: #0B0B0B;
   --light: #e0e0e0;
   --purple: #9747FF;
@@ -123,6 +123,11 @@ body {
   cursor: pointer;
 }
 
+.tab {
+  position: relative;
+}
+
+
 .tab.active {
   background-color: var(--darker);
   color: var(--purple);
@@ -132,11 +137,39 @@ body {
   background-color: var(--darker);
 }
 
+.tab .deleteProjectBtn {
+  position: absolute;
+  right: 4px;
+  height: 85%;
+  background-color: transparent;
+  z-index: 1000;
+  border: none;
+  padding: 2px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.tab .deleteProjectBtn:hover svg {
+  fill: var(--purple);
+}
+
 .tab svg {
   pointer-events: none;
   flex: none;
   height: 100%;
   fill: var(--light);
+}
+
+.tab input {
+  min-width: 0;
+  width: 100%;
+  background-color: transparent;
+  border: none;
+  color: var(--light);
+}
+
+.tab input:focus {
+  outline: none;
 }
 
 .createProject svg {
@@ -171,6 +204,7 @@ header {
   grid-auto-rows: 70px;
 }
 
+
 .task {
   display: flex;
   align-items: center;
@@ -178,16 +212,21 @@ header {
   font-size: 1.5rem;
   background-color: var(--grey);
   border-radius: 16px;
+  gap: 12px;
 }
 
 
 .task:hover {
   background-color: var(--darker-grey);
-  cursor: pointer;
 }
 
-.taskTitle {
-  margin: 0 auto 0 12px;
+
+.task .taskTitle {
+  flex: 1;
+  white-space: nowrap;
+  overflow: auto;
+  scrollbar-color: var(--light) var(--grey);
+  scrollbar-width: thin;
 }
 
 .checkbox input {
@@ -231,12 +270,14 @@ header {
   gap: 8px;
 }
 
-.task btn {
+.task button {
   padding: 4px;
   border-radius: 8px;
+  border: none;
+  background-color: transparent;
 }
 
-.task btn:hover {
+.task button:hover {
   cursor: pointer;
   background-color: var(--darker);
 }
@@ -254,6 +295,7 @@ header {
   border-radius: 16px;
   background-color: var(--grey);
   filter: brightness(0.7);
+  border: none;
 }
 
 #addTask:hover {
@@ -267,4 +309,99 @@ header {
   fill: var(--purple);
   margin: auto;
   filter: brightness(0.6);
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  backdrop-filter: blur(2px);
+  background-color: var(--darker);
+  display: flex;
+  z-index: 1000;
+}
+
+.taskForm {
+  margin: auto;
+  background-color: var(--grey);
+  height: 75%;
+  width: 28%;
+  min-width: 320px;
+  border-radius: 28px;
+  padding: 1%;
+  display: flex;
+  flex-direction: column;
+}
+
+.taskForm .close {
+  cursor: pointer;
+  background-color: transparent;
+  border: none;
+  border-radius: 8%;
+  align-self: end;
+  padding: 2px;
+  height: 48px;
+}
+
+.taskForm .close:hover {
+  background-color: var(--darker);
+}
+
+.taskForm .close svg {
+  pointer-events: none;
+  height: 100%;
+  fill: var(--purple);
+}
+
+.taskForm h2 {
+  text-align: center;
+  font-size: 2rem;
+  margin: 12px 0 20px;
+}
+
+.taskForm .fields {
+  padding: 0 20px;
+}
+
+.taskForm p {
+  display: flex;
+  gap: 12px;
+  font-size: 1.5rem;
+  margin-bottom: 20px;
+}
+
+.taskForm p input,
+.taskForm p select {
+  min-width: 0;
+  font-size: 1.3rem;
+  height: 2em;
+  flex: 1;
+  padding: 0 8px;
+  background-color: var(--dark);
+  border: none;
+  border-radius: 12px;
+  color: var(--light);
+}
+
+.taskForm p input:focus,
+.taskForm p select:focus {
+  outline: 2px solid var(--purple);
+}
+
+.taskForm .formSubmitBtn {
+  margin: auto auto 12px;
+  font-size: 1.5rem;
+  font-weight: 500;
+  background-color: transparent;
+  border: 4px solid var(--purple);
+  border-radius: 16px;
+  color: var(--purple);
+  padding: 4px 28px;
+  cursor: pointer;
+}
+
+.taskForm .formSubmitBtn:hover {
+  background-color: var(--darker);
 }

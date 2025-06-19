@@ -1,3 +1,5 @@
+import { format } from "date-fns";
+
 class Task {
   #id;
 
@@ -12,6 +14,8 @@ class Task {
   }
 
   get id() { return this.#id; }
+
+  get formattedDate() { return format(this.dueDate, 'dd MMM yyyy'); }
 
   update(title, dueDate, priority, notes, project) {
     this.title = title;
@@ -32,8 +36,25 @@ class Project {
     this.#id = crypto.randomUUID();
   }
 
+  #getPriorityPosition(priority) {
+    let l = 0, r = this.tasks.length - 1;
+    let ans = this.tasks.length ;
+    while ( l <= r) {
+      const middle = Math.floor((l + r) / 2);
+      if (this.tasks[middle].priority > priority) {
+        l = middle + 1;
+      } else {
+        ans = middle;
+        r = middle - 1;
+      }
+    }
+
+    return ans;
+  }
+
   addTask(task) {
-    this.tasks.push(task);
+    const pos = this.#getPriorityPosition(task.priority);
+    this.tasks.splice(pos, 0, task);
   }
 
   removeTask(task) {
@@ -51,6 +72,7 @@ class Project {
 
 export default class TodoApp {
   static maxPriority = 3;
+  
   #projects;
   #allTasks;
   constructor() {
@@ -88,28 +110,24 @@ export default class TodoApp {
     return newTask;
   }
 
-  removeTask(taskId) {
-    const index = this.#allTasks.findIndex((element) => element.id === taskId);
-    const task = this.#allTasks[index];
-
+  removeTask(task) {
     if (task.project) {
       task.project.removeTask(task);
     }
+    const index = this.#allTasks.findIndex((el) => el.id === task.id);
     this.#allTasks.splice(index, 1);
   }
 
-  editTask(taskId, title, dueDate, priority, notes, project) {
-    const task = this.#allTasks.find((element) => element.id === taskId);
+  editTask(task, title, dueDate, priority, notes, project) {
+    this.addTaskToProject(task, project);
     task.update(title, dueDate, priority, notes, project);
   }
 
-  switchStatus(taskId) {
-    const task = this.#allTasks.find((element) => element.id === taskId);
+  switchStatus(task) {
     task.status = !task.status;
   }
 
-  changePriority(taskId) {
-    const task = this.#allTasks.find((element) => element.id === taskId);
+  changePriority(task) {
     task.priority = (task.priority + 1) % TodoApp.maxPriority;
   }
 
@@ -119,33 +137,29 @@ export default class TodoApp {
     return newProject;
   }
 
-  addTaskToProject(taskId, projectId) {
-    const project = this.#projects.find((element) => element.id === projectId);
-    const task = this.#allTasks.find((element) => element.id === taskId);
-    this.removeTaskFromProject(taskId);
+  addTaskToProject(task, project) {
+    this.removeTaskFromProject(task);
     task.project = project;
     project.addTask(task);
   }
 
-  removeTaskFromProject(taskId) {
-    const task = this.#allTasks.find((element) => element.id === taskId);
-    const project = task.project;
-    
+  removeTaskFromProject(task) {
+    const project = task.project;    
 
     task.project = null;
     project.removeTask(task);
   }
 
-  removeProject(projectId) {
-    const index = this.#projects.findIndex((element) => element.id === projectId);
-    if (index === 0) return;
-    const project = this.#projects[index];
+  removeProject(project) {
+    if (this.#projects.length <= 1) {
+      return;
+    }
     project.tasks.forEach((task) => {task.project = null;});
+    const index = this.#projects.indexOf(project);
     this.#projects.splice(index, 1);
   }
 
-  editProject(projectId, title, description) {
-    const project = this.#projects.find((element) => element.id === projectId);
+  editProject(project, title, description) {
     project.update(title, description);
   }
 }
