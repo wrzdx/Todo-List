@@ -89,6 +89,10 @@ function createSubmitButton(form, task) {
     submit.addEventListener(
         "click", 
         (e) => {
+            if (!form.checkValidity()) {
+                form.reportValidity();
+                return;
+            }
             const args = [
                 document.querySelector("#titleField").value, 
                 parseISO(document.querySelector("#dueDateField").value), 
@@ -106,9 +110,6 @@ function createSubmitButton(form, task) {
             form.parentElement.remove();
             form.remove();
     })
-    
-
-    
     
     return submit;
 }

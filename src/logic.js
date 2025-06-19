@@ -36,24 +36,41 @@ class Project {
     this.#id = crypto.randomUUID();
   }
 
-  #getPriorityPosition(priority) {
-    let l = 0, r = this.tasks.length - 1;
-    let ans = this.tasks.length ;
-    while ( l <= r) {
+  #getPositionToInsert(task) {
+    let l = 0;
+    let r = this.tasks.length - 1;
+    let ans = this.tasks.length;
+    
+    while (l <= r) {
       const middle = Math.floor((l + r) / 2);
-      if (this.tasks[middle].priority > priority) {
+      const currentTask = this.tasks[middle];
+      
+      const dateComparison = this.#compareDates(task.dueDate, currentTask.dueDate);
+      
+      if (dateComparison > 0) {
         l = middle + 1;
-      } else {
+      } else if (dateComparison < 0) {
         ans = middle;
         r = middle - 1;
+      } else {
+        if (currentTask.priority > task.priority) {
+          l = middle + 1;
+        } else {
+          ans = middle;
+          r = middle - 1;
+        }
       }
     }
-
+    
     return ans;
   }
 
+  #compareDates(date1, date2) {
+    return date1.getTime() - date2.getTime();
+  }
+
   addTask(task) {
-    const pos = this.#getPriorityPosition(task.priority);
+    const pos = this.#getPositionToInsert(task);
     this.tasks.splice(pos, 0, task);
   }
 
@@ -121,8 +138,8 @@ class TodoApp {
   }
 
   editTask(task, title, dueDate, priority, notes, project) {
-    this.addTaskToProject(task, project);
-    task.update(title, dueDate, priority, notes, project);
+    this.createTask(title, dueDate, priority, notes, project)
+    this.removeTask(task);
     this.save();
   }
 
