@@ -70,7 +70,7 @@ class Project {
   get id() { return this.#id; }
 }
 
-export default class TodoApp {
+class TodoApp {
   static maxPriority = 3;
   
   #projects;
@@ -107,6 +107,7 @@ export default class TodoApp {
     if (project) {
       project.addTask(newTask);
     }
+    this.save();
     return newTask;
   }
 
@@ -116,51 +117,120 @@ export default class TodoApp {
     }
     const index = this.#allTasks.findIndex((el) => el.id === task.id);
     this.#allTasks.splice(index, 1);
+    this.save();
   }
 
   editTask(task, title, dueDate, priority, notes, project) {
     this.addTaskToProject(task, project);
     task.update(title, dueDate, priority, notes, project);
+    this.save();
   }
 
   switchStatus(task) {
     task.status = !task.status;
+    this.save();
   }
 
   changePriority(task) {
     task.priority = (task.priority + 1) % TodoApp.maxPriority;
+    this.save();
   }
 
   createProject(title, description) {
     const newProject = new Project(title, description);
     this.#projects.push(newProject);
+    this.save();
     return newProject;
   }
 
   addTaskToProject(task, project) {
-    this.removeTaskFromProject(task);
+    task.project.removeTask(task);
     task.project = project;
     project.addTask(task);
-  }
-
-  removeTaskFromProject(task) {
-    const project = task.project;    
-
-    task.project = null;
-    project.removeTask(task);
+    this.save();
   }
 
   removeProject(project) {
     if (this.#projects.length <= 1) {
       return;
     }
-    project.tasks.forEach((task) => {task.project = null;});
+    project.tasks.forEach((task) => {
+      this.removeTask(task);
+    });
     const index = this.#projects.indexOf(project);
     this.#projects.splice(index, 1);
+    this.save();
   }
 
   editProject(project, title, description) {
     project.update(title, description);
+    this.save();
+  }
+
+  save() {
+    const tasks = this.#allTasks.map(task => {
+      return [
+        task.title, 
+        task.dueDate ? task.dueDate.toISOString() : null, 
+        task.priority, 
+        task.notes, 
+        task.project.id
+      ];
+    });
+    const projects = this.#projects.map(project => {
+      return [
+        project.id,
+        project.title,
+        project.description,
+      ];
+    })
+    localStorage.setItem("tasks", JSON.stringify(tasks));
+    localStorage.setItem("projects", JSON.stringify(projects));
   }
 }
 
+export default function loadApp() {
+  const tasks = localStorage.getItem("tasks");
+  const projects = localStorage.getItem("projects");
+  let app = new TodoApp();
+
+
+  let oldToNewMap = {};
+  
+  if (projects) {
+    try {
+      const parsed = JSON.parse(projects);
+      for (const project of parsed) {
+        const [id, title, description] = project;
+        oldToNewMap[id] = app.createProject(title, description);
+      }
+      app.removeProject(app.defaultProject);
+      app.activeProject = app.defaultProject;
+    } catch (e) {
+      console.error("Failed to parse saved data", e);
+    }
+  } 
+
+  if (tasks) {
+    try {
+      const parsed = JSON.parse(tasks);
+      for (const task of parsed) {
+        const [title, dueDate, priority, notes, projectId] = task;
+        const project = oldToNewMap[projectId] || app.defaultProject;
+        const dateObj = dueDate ? new Date(dueDate) : null;
+
+        const newTask = app.createTask(
+          title, 
+          dateObj, 
+          priority, 
+          notes, 
+          project,
+        );
+      }
+    } catch (e) {
+      console.error("Failed to parse saved data", e);
+    }
+  } 
+  
+  return app;
+}

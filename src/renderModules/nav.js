@@ -7,10 +7,13 @@ function createProfileDiv() {
   const profile = document.createElement("div");
   const accountSVG = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><title>account-circle</title><path d="M12,19.2C9.5,19.2 7.29,17.92 6,16C6.03,14 10,12.9 12,12.9C14,12.9 17.97,14 18,16C16.71,17.92 14.5,19.2 12,19.2M12,5A3,3 0 0,1 15,8A3,3 0 0,1 12,11A3,3 0 0,1 9,8A3,3 0 0,1 12,5M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12C22,6.47 17.5,2 12,2Z" /></svg>';
   profile.innerHTML = accountSVG;
+  
   const name = document.createElement("p");
-  name.innerText = "Eugene";
+  name.innerText = "User";
+  
   profile.appendChild(name);
   profile.classList.add("profile");
+  
   return profile;
 }
 
@@ -26,6 +29,8 @@ function createDeleteBtn(project) {
     const projects = document.querySelector(".projects");
     projects.replaceWith(createProjects());
     projectsTasksDiv.replaceWith(createProjectTasksDiv());
+    const header = document.querySelector("header");
+    header.replaceWith(createHeader());
   });
 
   return deleteBtn;

@@ -227,6 +227,7 @@ header {
   overflow: auto;
   scrollbar-color: var(--light) var(--grey);
   scrollbar-width: thin;
+  min-width: 50px;
 }
 
 .checkbox input {
