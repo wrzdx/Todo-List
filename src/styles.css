@@ -1,6 +1,8 @@
 /* Resetting */
 
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
 }
 
@@ -20,41 +22,62 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-img, picture, video, canvas, svg {
+img,
+picture,
+video,
+canvas,
+svg {
   display: block;
   max-width: 100%;
 }
 
-input, button, textarea, select {
+input,
+button,
+textarea,
+select {
   font: inherit;
 }
 
-p, h1, h2, h3, h4, h5, h6 {
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   overflow-wrap: break-word;
 }
 
 p {
   text-wrap: pretty;
 }
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   text-wrap: balance;
 }
 
-#root, #__next {
+#root,
+#__next {
   isolation: isolate;
 }
 
 /* Main */
 
 body {
-  font-family: system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  font-family:
+    system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif,
+    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
   background-color: var(--dark);
   color: var(--light);
-  
-  --dark: #0B0B0B;
+
+  --dark: #0b0b0b;
   --light: #e0e0e0;
-  --purple: #9747FF;
-  --grey: #1B1B1B;
+  --purple: #9747ff;
+  --grey: #1b1b1b;
   --darker: rgba(0, 0, 0, 0.2);
   --darker-grey: #171717;
 }
@@ -72,7 +95,7 @@ body {
   align-content: start;
   grid-template-rows: 100px 1fr auto;
   grid-row: 1 / 3;
-} 
+}
 
 .nav > * {
   padding: 0 20px;
@@ -108,8 +131,8 @@ body {
   overflow: hidden;
 }
 
-
-.tab, .createProject {
+.tab,
+.createProject {
   border: none;
   display: flex;
   padding: 4px 0 4px 24px;
@@ -127,13 +150,13 @@ body {
   position: relative;
 }
 
-
 .tab.active {
   background-color: var(--darker);
   color: var(--purple);
 }
 
-.tab:hover, .createProject:hover {
+.tab:hover,
+.createProject:hover {
   background-color: var(--darker);
 }
 
@@ -204,7 +227,6 @@ header {
   grid-auto-rows: 70px;
 }
 
-
 .task {
   display: flex;
   align-items: center;
@@ -215,11 +237,9 @@ header {
   gap: 12px;
 }
 
-
 .task:hover {
   background-color: var(--darker-grey);
 }
-
 
 .task .taskTitle {
   flex: 1;

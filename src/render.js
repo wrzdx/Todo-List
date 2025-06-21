@@ -1,4 +1,4 @@
-import "./styles.css"
+import "./styles.css";
 import loadApp from "./logic";
 import createNav from "./renderModules/nav";
 import createProjectTasksDiv from "./renderModules/projectTasksDiv";
